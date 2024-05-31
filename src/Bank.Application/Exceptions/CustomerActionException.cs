@@ -21,4 +21,6 @@ public class CustomerActionException : Exception
     public CustomerActionException(string message, Exception innerException) : base(message, innerException)
     {
     }
+
+    public static CustomerActionException NewGeneralErrorWithException(Exception ex) => new("There was an error for a customer action.", ex);
 }

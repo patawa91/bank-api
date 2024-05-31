@@ -7,6 +7,8 @@ public class AccountCloseResultProfile : Profile
     public AccountCloseResultProfile()
     {
         CreateMap<Domain.Models.AccountClose, Contracts.AccountCloseResult>()
-            .ForMember(dest => dest.Succeeded, opt => opt.MapFrom(src => true));
+            .ConstructUsing((src, context) =>
+                            new Contracts.AccountCloseResult(src.CustomerId, src.AccountId, true));
+            
     }
 }

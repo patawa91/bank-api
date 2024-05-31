@@ -7,6 +7,7 @@ public class DepositResultProfile : Profile
     public DepositResultProfile()
     {
         CreateMap<Domain.Models.Account, Contracts.DepositResult>()
-            .ForMember(dest => dest.Succeeded, opt => opt.MapFrom(src => true));
+            .ConstructUsing((src, context) =>
+                            new Contracts.DepositResult(src.CustomerId, src.AccountId.HasValue ? src.AccountId.Value : 0, src.Balance, true));
     }
 }

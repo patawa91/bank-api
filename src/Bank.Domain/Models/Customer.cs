@@ -6,7 +6,7 @@
 /// <param name="CustomerId">Id of customer.</param>
 /// <param name="FirstName">First name.</param>
 /// <param name="LastName">Last name</param>
-public class Customer(int CustomerId, string FirstName, string LastName)
+public class Customer(int CustomerId, string FirstName, string LastName, string PinHashed)
 {
     /// <summary>
     /// Id of customer.
@@ -22,4 +22,9 @@ public class Customer(int CustomerId, string FirstName, string LastName)
     /// Last name.
     /// </summary>
     public string LastName { get; } = LastName;
+
+    /// <summary>
+    /// Hashed pin number provided by customer.
+    /// </summary>
+    public string PinHashed { get; } = PinHashed;
 }

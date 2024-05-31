@@ -9,32 +9,33 @@ public sealed class AccountCustomerService(IAccountRepository AccountRepository,
 {
     private readonly IAccountRepository _accountRepository = AccountRepository;
     private readonly ICustomerRepository _customerRepository = CustomerRepository;
+    private readonly decimal _minimumInitialCreationAmount = 100;
 
     /// <inheritdoc cref="IAccountCustomerService.CloseAccount(Domain.Models.AccountClose)"/>
-    public Account CloseAccount(AccountClose accountClose)
+    public async Task<Account> CloseAccountAsync(AccountClose accountClose)
     {
         // get the account
-        var account = _accountRepository.GetById(accountClose.AccountId);
+        var account = await _accountRepository.GetByIdAsync(accountClose.AccountId);
 
         // make sure the account exists
         if(account is not { })
         {
-            throw new AccountCustomerValidationException(null, accountClose, [AccountCustomerValidationException.CloseAccountMustExist()]);
+            throw new AccountCustomerValidationException(account, accountClose, [AccountCustomerValidationException.CloseAccountMustExist()]);
         }
 
         // close account
         account.Close(accountClose);
         
         // save account
-        account = _accountRepository.Save(account);
+        account = await _accountRepository.SaveAsync(account);
         return account; 
     }
 
     /// <inheritdoc cref="IAccountCustomerService.CreateAccount(int, decimal, AccountType)"/>
-    public Account CreateAccount(int customerId, decimal amount, AccountType accountType)
+    public async Task<Account> CreateAccountAsync(int customerId, decimal amount, AccountType accountType)
     {
         // get customer from customer repository and make sure it exists
-        var customer = _customerRepository.GetById(customerId);
+        var customer = await _customerRepository.GetByIdAsync(customerId);
 
         // make sure the customer exists
         if (customer is not { })
@@ -43,7 +44,7 @@ public sealed class AccountCustomerService(IAccountRepository AccountRepository,
         }
 
         // validation
-        if (amount < 100)
+        if (amount < _minimumInitialCreationAmount)
         {
             throw new AccountCustomerValidationException(null, null, [AccountCustomerValidationException.CreateAccountMustHaveInitialAmount(100)]);
         }
@@ -53,53 +54,60 @@ public sealed class AccountCustomerService(IAccountRepository AccountRepository,
             throw new AccountCustomerValidationException(null, null, [AccountCustomerValidationException.CreateAccountMustBeValidTypes()]);
         }
 
+        var accountCount = await _accountRepository.GetOpenCountByCustomerIdAsync(customerId);
+
+        if( accountCount == 0 && accountType is not AccountType.Savings)
+        {
+            throw new AccountCustomerValidationException(null, null, [AccountCustomerValidationException.CreateFirstAccountMustBeSavings()]);
+        }
+
         // create new account
         var account = new Account(null, customerId, amount, accountType, AccountStatus.Open);
 
         // save it to the account repository
-        account = _accountRepository.Save(account);
+        account = await _accountRepository.SaveAsync(account);
 
         return account;
     }
 
     /// <inheritdoc cref="IAccountCustomerService.Deposit(Domain.Models.Deposit)"/>
-    public Account Deposit(Deposit deposit)
+    public async Task<Account> DepositAsync(Deposit deposit)
     {
         // get the account
-        var account = _accountRepository.GetById(deposit.AccountId);
+        var account = await _accountRepository.GetByIdAsync(deposit.AccountId);
 
         // make sure the account exists
         if (account is not { })
         {
-            throw new AccountCustomerValidationException(null, deposit, [AccountCustomerValidationException.DepositAccountMustExist()]);
+            throw new AccountCustomerValidationException(account, deposit, [AccountCustomerValidationException.DepositAccountMustExist()]);
         }
 
         // deposit
         account.Deposit(deposit);
 
         // save account
-        account = _accountRepository.Save(account);
+        account = await _accountRepository.SaveAsync(account);
 
         return account;
     }
 
     /// <inheritdoc cref="IAccountCustomerService.Withdraw(Withdrawal)"/>
-    public Account Withdraw(Withdrawal withdrawal)
+    public async Task<Account> WithdrawAsync(Withdrawal withdrawal)
     {
         // get the account
-        var account = _accountRepository.GetById(withdrawal.AccountId);
+        var account = await _accountRepository.GetByIdAsync(withdrawal.AccountId);
 
         // make sure the account exists
         if (account is not { })
         {
-            throw new AccountCustomerValidationException(null, withdrawal, [AccountCustomerValidationException.WithdrawalAccountMustExist()]);
+            throw new AccountCustomerValidationException(account, withdrawal, [AccountCustomerValidationException.WithdrawalAccountMustExist()]);
         }
 
         // withdraw
         account.Withdraw(withdrawal);
 
         // save account
-        account = _accountRepository.Save(account);
+        account = await _accountRepository.SaveAsync(account);
 
         return account;
     }

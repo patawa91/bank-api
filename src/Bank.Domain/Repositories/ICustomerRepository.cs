@@ -12,5 +12,5 @@ public interface ICustomerRepository
     /// </summary>
     /// <param name="customerId">Id of customer.</param>
     /// <returns>The customer.</returns>
-    Customer GetById(int customerId);
+    Task<Customer> GetByIdAsync(int customerId);
 }

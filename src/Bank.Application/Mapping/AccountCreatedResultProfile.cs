@@ -7,7 +7,7 @@ public class AccountCreatedResultProfile : Profile
     public AccountCreatedResultProfile()
     {
         CreateMap<Domain.Models.Account, Contracts.AccountCreatedResult>()
-            .ForMember(dest => dest.AccountTypeId, opt => opt.MapFrom(src => src.AccountType))
-            .ForMember(dest => dest.Succeeded, opt => opt.MapFrom(src => true));
+            .ConstructUsing((src, context) =>
+                new Contracts.AccountCreatedResult(src.CustomerId, src.AccountId.HasValue ? src.AccountId.Value : 0, context.Mapper.Map<Contracts.AccountType>(src.AccountType), src.Balance, true));
     }
 }

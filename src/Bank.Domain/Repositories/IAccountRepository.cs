@@ -11,12 +11,19 @@ public interface IAccountRepository
     /// Save an account.
     /// </summary>
     /// <param name="account">Account to save.</param>
-    Account Save(Account account);
+    Task<Account> SaveAsync(Account account);
 
     /// <summary>
     /// Get an account by id.
     /// </summary>
     /// <param name="id">Id of the account.</param>
     /// <returns>The account</returns>
-    Account GetById(int id);
+    Task<Account> GetByIdAsync(int id);
+
+    /// <summary>
+    /// Get count by customer id.
+    /// </summary>
+    /// <param name="id">Id of customer.</param>
+    /// <returns>Number of account</returns>
+    Task<int> GetOpenCountByCustomerIdAsync(int id);
 }

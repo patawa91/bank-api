@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Bank.Application.Models;
 
 namespace Bank.Application.Mapping;
 
@@ -8,5 +9,6 @@ public class WithdrawalProfile : Profile
     {
         CreateMap<Contracts.Withdrawal, Domain.Models.Withdrawal>();
         CreateMap<Domain.Models.Withdrawal, Contracts.Withdrawal>();
+        CreateMap<Domain.Models.Withdrawal, InputErrorActionInfo>();
     }
 }

@@ -86,6 +86,11 @@ public sealed class AccountCustomerValidationException : Exception
     public static string WithdrawalMustExist() => "Withdrawal must exist.";
 
     /// <summary>
+    /// Message when withdrawal is not greater than zero.
+    /// </summary>
+    public static string WithdrawalMustBeGreaterThanZero() => "Deposit must be greater than zero.";
+
+    /// <summary>
     /// Message when withdrawal makes balance less than zero.
     /// </summary>
     public static string WithdrawalEndBalanceMustBeGreaterEqualToZero() => "Withdrawal will make balance in account less than zero.";
@@ -119,4 +124,11 @@ public sealed class AccountCustomerValidationException : Exception
     /// Message when the account type is not valid.
     /// </summary>
     public static string CreateAccountMustBeValidTypes() => "Account must be of Savings or Checking to set up a new account.";
+
+    /// <summary>
+    /// Message when first account and not savings.
+    /// </summary>
+    public static string CreateFirstAccountMustBeSavings() => "Account must be of Savings for first account.";
+
+
 }

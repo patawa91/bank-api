@@ -1,25 +1,21 @@
-﻿namespace Bank.Application.Exceptions;
+﻿using Bank.Application.Models;
+
+namespace Bank.Application.Exceptions;
 
 /// <summary>
 /// Base exception for customer actions.
 /// </summary>
 public class CustomerActionInputException : CustomerActionException
 {
-    private readonly IList<string> _errorMessages;
-
-
-    /// <summary>
-    /// Error messags generated during validation.
-    /// </summary>
-    public IReadOnlyCollection<string> Errors => _errorMessages.AsReadOnly();
+    public InputError? InputError { get; private set; }
 
     /// <summary>
     /// Base exception for customer actions.
     /// </summary>
     /// <param name="message">The exception message.</param>
-    public CustomerActionInputException(string message, IEnumerable<string>? errorMessages = null) : base(message)
+    public CustomerActionInputException(string message, InputError? inputError = null) : base(message)
     {
-        _errorMessages = errorMessages?.ToList() ?? [];
+        InputError = inputError;
     }
 
     /// <summary>
@@ -27,8 +23,11 @@ public class CustomerActionInputException : CustomerActionException
     /// </summary>
     /// <param name="message">The exception message.</param>
     /// <param name="innerException">The inner exception.</param>
-    public CustomerActionInputException(string message, Exception innerException, IEnumerable<string>? errorMessages = null) : base(message, innerException)
+    public CustomerActionInputException(string message, Exception innerException, InputError? inputError = null) : base(message, innerException)
     {
-        _errorMessages = errorMessages?.ToList() ?? [];
+        InputError = inputError;
     }
+
+    public static CustomerActionInputException NewWithErrors(InputError? inputError = null) => new("There were input errors for a customer action.", inputError);
+    
 }

@@ -108,7 +108,10 @@ public sealed class Account(int? AccountId, int CustomerId, decimal Balance, Acc
             errors.Add(AccountCustomerValidationException.DepositMustBeGreaterThanZero());
         }
 
-        throw new AccountCustomerValidationException(this, deposit, errors);
+        if (errors.Any())
+        {
+            throw new AccountCustomerValidationException(this, deposit, errors);
+        }
     }
 
     private void Validate(Withdrawal withdrawal)
@@ -130,12 +133,20 @@ public sealed class Account(int? AccountId, int CustomerId, decimal Balance, Acc
             errors.Add(AccountCustomerValidationException.WithdrawalAccountMustMatch());
         }
 
+        if (withdrawal.Amount <= 0)
+        {
+            errors.Add(AccountCustomerValidationException.WithdrawalMustBeGreaterThanZero());
+        }
+
         if (Balance - withdrawal.Amount < 0)
         {
             errors.Add(AccountCustomerValidationException.WithdrawalEndBalanceMustBeGreaterEqualToZero());
         }
 
-        throw new AccountCustomerValidationException(this, withdrawal, errors);
+        if (errors.Any())
+        {
+            throw new AccountCustomerValidationException(this, withdrawal, errors);
+        }
     }
 
     private void Validate(AccountClose closeAccount)
@@ -152,11 +163,14 @@ public sealed class Account(int? AccountId, int CustomerId, decimal Balance, Acc
             errors.Add(AccountCustomerValidationException.DepositCustomerMustMatch());
         }
 
-        if (closeAccount.Amount != 0)
+        if (Balance != 0)
         {
             errors.Add(AccountCustomerValidationException.CloseAccountBalanceMustBeZero());
         }
 
-        throw new AccountCustomerValidationException(this, closeAccount, errors);
+        if (errors.Any())
+        {
+            throw new AccountCustomerValidationException(this, closeAccount, errors);
+        }
     }
 }

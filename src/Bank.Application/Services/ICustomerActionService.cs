@@ -10,28 +10,31 @@ public interface ICustomerActionService
     /// <summary>
     /// Deposit money into an account.
     /// </summary>
+    /// <param name="accountId">Id of the account.</param>
     /// <param name="deposit">Deposit data.</param>
     /// <returns>Result of deposit.</returns>
-    DepositResult Deposit(Deposit deposit);
+    Task<DepositResult> DepositAsync(int accountId, Deposit deposit);
 
     /// <summary>
     /// Withdraw money from an account.
     /// </summary>
+    /// <param name="accountId">Id of the account.</param>
     /// <param name="withdrawal">Withdrawal data.</param>
     /// <returns>Result of withdraw.</returns>
-    WithdrawalResult Withdraw(Withdrawal withdrawal);
+    Task<WithdrawalResult> WithdrawAsync(int accountId, Withdrawal withdrawal);
 
     /// <summary>
     /// Create a new account for a customer.
     /// </summary>
     /// <param name="accountCreate">Create data.</param>
     /// <returns>Result of create.</returns>
-    AccountCreatedResult CreateAccount(AccountCreate accountCreate);
+    Task<AccountCreatedResult> CreateAccountAsync(AccountCreate accountCreate);
 
     /// <summary>
     /// Close an account.
     /// </summary>
+    /// <param name="accountId">Id of the account.</param>
     /// <param name="accountClose">Close data.</param>
     /// <returns>Result of closing.</returns>
-    AccountCloseResult AccountCloseResult(AccountClose accountClose);
+    Task<AccountCloseResult> CloseAccountAsync(int accountId, AccountClose accountClose);
 }
