@@ -1,8 +1,11 @@
 ﻿namespace Bank.Contracts;
 
-public sealed record Withdrawal : Transaction
+/// <summary>
+/// Withdraw money from an account.
+/// </summary>
+/// <param name="CustomerId">The customer id.</param>
+/// <param name="AccountId">The account id.</param>
+/// <param name="Amount">The amount to deposit.</param>
+public sealed record Withdrawal(int CustomerId, int AccountId, decimal Amount)
 {
-    public Withdrawal(int customerId, int accountId, decimal amount) : base(customerId, accountId, amount)
-    {
-    }
 }

@@ -6,6 +6,6 @@
 /// <param name="InitialDeposit">The initial amount to deposit.</param>
 /// <param name="AccountTypeId">The type of account this is.</param>
 /// </summary>
-public sealed record AccountCreate(int CustomerId, decimal InitialDeposit, AccountTypeId AccountTypeId)
+public sealed record AccountCreate(int CustomerId, decimal InitialDeposit, AccountType AccountTypeId)
 {
 }

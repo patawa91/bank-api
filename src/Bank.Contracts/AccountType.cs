@@ -3,7 +3,7 @@
 /// <summary>
 /// The type of an account.
 /// </summary>
-public enum AccountTypeId
+public enum AccountType
 {
     Unknown = 0,
     Checking = 1,

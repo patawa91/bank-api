@@ -8,6 +8,6 @@
 /// <param name="AccountTypeId">The type of account this is.</param>
 /// <param name="Balance">The balance of the account after this operation.</param>
 /// <param name="Succeeded">Did this operation succeed or not.</param>
-public sealed record AccountCreatedResult(int CustomerId, int AccountId, AccountTypeId AccountTypeId, decimal Balance, bool Succeeded) : AccountResult(CustomerId, AccountId, Succeeded)
+public sealed record AccountCreatedResult(int CustomerId, int AccountId, AccountType AccountTypeId, decimal Balance, bool Succeeded)
 {
 }
