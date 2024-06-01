@@ -25,8 +25,8 @@ internal class Program
         builder.Services.AddDbContext<BankDbContext>(options => options.UseInMemoryDatabase("BankDb"));
 
         // Add respositories
-        builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-        builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+        builder.Services.AddScoped<IRepository<Bank.Domain.Models.Account, Bank.Domain.Models.AccountSearch>, AccountRepository>();
+        builder.Services.AddScoped<IRepository<Bank.Domain.Models.Customer, Bank.Domain.Models.CustomerSearch>, CustomerRepository>();
 
         // Add domain services
         builder.Services.AddScoped<IAccountCustomerService, AccountCustomerService>();

@@ -5,10 +5,10 @@ using Bank.Domain.Repositories;
 namespace Bank.Domain.Services;
 
 /// <inheritdoc cref="IAccountCustomerService"/>
-public sealed class AccountCustomerService(IAccountRepository AccountRepository, ICustomerRepository CustomerRepository) : IAccountCustomerService
+public sealed class AccountCustomerService(IRepository<Bank.Domain.Models.Account, Bank.Domain.Models.AccountSearch> AccountRepository, IRepository<Bank.Domain.Models.Customer, Bank.Domain.Models.CustomerSearch> CustomerRepository) : IAccountCustomerService
 {
-    private readonly IAccountRepository _accountRepository = AccountRepository;
-    private readonly ICustomerRepository _customerRepository = CustomerRepository;
+    private readonly IRepository<Bank.Domain.Models.Account, Bank.Domain.Models.AccountSearch> _accountRepository = AccountRepository;
+    private readonly IRepository<Bank.Domain.Models.Customer, Bank.Domain.Models.CustomerSearch> _customerRepository = CustomerRepository;
     private readonly decimal _minimumInitialCreationAmount = 100;
 
     /// <inheritdoc cref="IAccountCustomerService.CloseAccount(Domain.Models.AccountClose)"/>
@@ -27,7 +27,7 @@ public sealed class AccountCustomerService(IAccountRepository AccountRepository,
         account.Close(accountClose);
         
         // save account
-        account = await _accountRepository.SaveAsync(account);
+        account = await _accountRepository.UpdateAsync(account);
         return account; 
     }
 
@@ -54,7 +54,7 @@ public sealed class AccountCustomerService(IAccountRepository AccountRepository,
             throw new AccountCustomerValidationException(null, null, [AccountCustomerValidationException.CreateAccountMustBeValidTypes()]);
         }
 
-        var accountCount = await _accountRepository.GetOpenCountByCustomerIdAsync(customerId);
+        var accountCount = (await _accountRepository.Find(new AccountSearch { CustomerId = customerId, AccountStatus = AccountStatus.Open})).Count();
 
         if( accountCount == 0 && accountType is not AccountType.Savings)
         {
@@ -65,7 +65,7 @@ public sealed class AccountCustomerService(IAccountRepository AccountRepository,
         var account = new Account(null, customerId, amount, accountType, AccountStatus.Open);
 
         // save it to the account repository
-        account = await _accountRepository.SaveAsync(account);
+        account = await _accountRepository.AddAsync(account);
 
         return account;
     }
@@ -86,7 +86,7 @@ public sealed class AccountCustomerService(IAccountRepository AccountRepository,
         account.Deposit(deposit);
 
         // save account
-        account = await _accountRepository.SaveAsync(account);
+        account = await _accountRepository.UpdateAsync(account);
 
         return account;
     }
@@ -107,7 +107,7 @@ public sealed class AccountCustomerService(IAccountRepository AccountRepository,
         account.Withdraw(withdrawal);
 
         // save account
-        account = await _accountRepository.SaveAsync(account);
+        account = await _accountRepository.UpdateAsync(account);
 
         return account;
     }
